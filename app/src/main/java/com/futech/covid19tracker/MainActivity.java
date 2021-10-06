@@ -24,9 +24,11 @@ import org.eazegraph.lib.models.PieModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class MainActivity extends AppCompatActivity {
 
-    TextView tvCases,tvRecovered,tvCritical,tvActive,tvTodayCases,tvTotalDeaths,tvTodayDeaths,tvAffectedCountries;
+    TextView tvCases, tvRecovered, tvCritical, tvActive, tvTodayCases, tvTotalDeaths, tvTodayDeaths, tvAffectedCountries;
     SimpleArcLoader simpleArcLoader;
     ScrollView scrollView;
     PieChart pieChart;
@@ -80,17 +82,15 @@ public class MainActivity extends AppCompatActivity {
                             tvAffectedCountries.setText(jsonObject.getString("affectedCountries"));
 
 
-                            pieChart.addPieSlice(new PieModel("Cases",Integer.parseInt(tvCases.getText().toString()), Color.parseColor("#FFA726")));
-                            pieChart.addPieSlice(new PieModel("Recoverd",Integer.parseInt(tvRecovered.getText().toString()), Color.parseColor("#66BB6A")));
-                            pieChart.addPieSlice(new PieModel("Deaths",Integer.parseInt(tvTotalDeaths.getText().toString()), Color.parseColor("#EF5350")));
-                            pieChart.addPieSlice(new PieModel("Active",Integer.parseInt(tvActive.getText().toString()), Color.parseColor("#29B6F6")));
+                            pieChart.addPieSlice(new PieModel("Cases", Integer.parseInt(tvCases.getText().toString()), Color.parseColor("#FFA726")));
+                            pieChart.addPieSlice(new PieModel("Recoverd", Integer.parseInt(tvRecovered.getText().toString()), Color.parseColor("#66BB6A")));
+                            pieChart.addPieSlice(new PieModel("Deaths", Integer.parseInt(tvTotalDeaths.getText().toString()), Color.parseColor("#EF5350")));
+                            pieChart.addPieSlice(new PieModel("Active", Integer.parseInt(tvActive.getText().toString()), Color.parseColor("#29B6F6")));
                             pieChart.startAnimation();
 
                             simpleArcLoader.stop();
                             simpleArcLoader.setVisibility(View.GONE);
                             scrollView.setVisibility(View.VISIBLE);
-
-
 
 
                         } catch (JSONException e) {
@@ -120,9 +120,67 @@ public class MainActivity extends AppCompatActivity {
 
     public void goTrackCountries(View view) {
 
-        startActivity(new Intent(getApplicationContext(),AffectedCountries.class));
+        startActivity(new Intent(getApplicationContext(), AffectedCountries.class));
 
     }
 
+    @Override
+    public void onBackPressed() {
 
+//        new AlertDialog.Builder(MainActivity.this)
+//                .setIcon(R.drawable.ic_baseline_warning_24)
+//                .setTitle("Exit")
+//                .setMessage("Want to Exit App.?")
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        finish();
+//                    }
+//                }).setNeutralButton("Help", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                Toast.makeText(MainActivity.this, "Create yes to exit", Toast.LENGTH_SHORT).show();
+//            }
+//        }).setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//            }
+//        }).show();
+
+//        new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+//                .setTitleText("Are you sure?")
+//                .setContentText("Won't be able to recover this file!")
+//                .setConfirmText("Yes,delete it!")
+//                .show();
+
+        new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Are you sure?")
+                .setContentText("Won't be able to recover this file!")
+                .setCancelText("Cancel")
+                .setConfirmText("Exit")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        //finish();
+                        finishAffinity();
+                    }
+                })
+                .showCancelButton(true)
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
+                    }
+                })
+                .setNeutralButton("Help", new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        Toast.makeText(MainActivity.this, "Press Exit to quit App", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
+
+
+    }
 }
